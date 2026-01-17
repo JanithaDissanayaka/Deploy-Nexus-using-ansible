@@ -1,0 +1,31 @@
+---
+- name: install java and net tools
+  hosts: 3.108.40.13
+  tasks:
+    - name: Update repositories cache
+      ansible.builtin.apt:
+        update_cache: yes
+        force_apt_get: true
+        cache_valid_time : 3600
+
+    - name: Install the package "java"
+      ansible.builtin.apt:
+        name: openjdk-8-jre-headless
+
+    - name: Install the package "net-tools"
+      ansible.builtin.apt:
+        name: net-tools
+
+- name: Download and unpack nexus installer
+  hosts: 3.108.40.13
+  tasks:
+    - name: Download nexus
+      ansible.builtin.get_url: 
+        url: https://download.sonatype.com/nexus/3/nexus-3.88.0-08-linux-x86_64.tar.gz
+        dest: /opt/
+
+    - name: Extract nexus-3.88.0-08-linux-x86_64.tar.gz into /var/lib/foo
+      ansible.builtin.unarchive:
+        src: /opt/nexus-3.88.0-08-linux-x86_64.tar.gz
+        dest: /opt/
+      
