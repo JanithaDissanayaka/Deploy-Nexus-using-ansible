@@ -6,13 +6,9 @@ cd /opt
 wget https://download.sonatype.com/nexus/3/latest-unix.tar.gz
 tar -xvzf latest-unix.tar.gz
 
-mv nexus-3* nexus
-mv sonatype-work nexusdata
-
-
 adduser nexus
-sudo chown -R nexus:nexus /opt/nexus
-sudo chown -R nexus:nexus /opt/nexusdata
+sudo chown -R nexus:nexus /opt/nexus-3.88.0-08
+sudo chown -R nexus:nexus /opt/sonatype-work
 
 vim /opt/nexus/bin/nexus.rc
 run_as_user="nexus"

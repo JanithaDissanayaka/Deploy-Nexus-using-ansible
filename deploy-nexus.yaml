@@ -23,9 +23,19 @@
       ansible.builtin.get_url: 
         url: https://download.sonatype.com/nexus/3/nexus-3.88.0-08-linux-x86_64.tar.gz
         dest: /opt/
+      register: nexus_file
 
-    - name: Extract nexus-3.88.0-08-linux-x86_64.tar.gz into /var/lib/foo
+    - name: Extract nexus-3.88.0-08-linux-x86_64.tar.gz into /opt/
       ansible.builtin.unarchive:
-        src: /opt/nexus-3.88.0-08-linux-x86_64.tar.gz
+        src: "{{nexus_file.dest}}"
         dest: /opt/
-      
+        remote_src: yes
+
+    - name: Find nexus Folder
+      ansible.builtin.find:
+        paths: /opt/
+        patterns: "nexus-*"
+        file_type: directory
+      register: find_result
+    - debug: msg={{find_result}}
+
