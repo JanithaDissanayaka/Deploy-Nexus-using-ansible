@@ -19,17 +19,26 @@
 - name: Download and unpack nexus installer
   hosts: 65.2.143.99
   tasks:
+    - name : check nexus folder stats
+      ansible.builtin.stat:
+        path: /opt/nexus
+      register: stat_result
+    - debug: msg={{stat_result.stat.exists}}
+
     - name: Download nexus
       ansible.builtin.get_url: 
         url: https://download.sonatype.com/nexus/3/nexus-3.88.0-08-linux-x86_64.tar.gz
         dest: /opt/
       register: nexus_file
+      when: not stat_result.stat.exists
+      
 
     - name: Extract nexus-3.88.0-08-linux-x86_64.tar.gz into /opt/
       ansible.builtin.unarchive:
         src: "{{nexus_file.dest}}"
         dest: /opt/
         remote_src: yes
+      when: not stat_result.stat.exists
 
     - name: Find nexus Folder
       ansible.builtin.find:
@@ -78,3 +87,17 @@
         owner: nexus
         group: nexus
         recurse: yes
+
+- name: start nexus with nexus user
+  hosts: 65.2.143.99
+  become: true
+  become_user: nexus
+  tasks:
+    - name: set run_as_user nexus
+      ansible.builtin.lineinfile:
+        path: /opt/nexus/bin/nexus.rc
+        regexp: '^#run_as_user:""'
+        line: run_as_user="nexus"
+
+    - name: start nexus
+      ansible.builtin.command: /opt/nexus/bin/nexus start
