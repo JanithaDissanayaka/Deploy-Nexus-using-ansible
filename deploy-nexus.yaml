@@ -114,7 +114,11 @@
       register: app_status
     - debug: msg={{app_status.stdout_lines}}
 
+    - name: Pause for 5 minutes to build app cache
+      ansible.builtin.pause:
+        minutes: 1
+
     - name: check using netsat
-      ansible.builtin.shell: nestat -plnt
+      ansible.builtin.shell: ss -tulnp | grep 8081
       register: app_status
     - debug: msg={{app_status.stdout_lines}}
