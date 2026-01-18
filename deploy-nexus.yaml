@@ -63,9 +63,17 @@
         comment: nexus user
         group: nexus
 
-    - name: Change file ownership, group and permissions
+    - name: Change nexus file ownership, group and permissions
       ansible.builtin.file:
         path: /opt/nexus
+        state: directory
+        owner: nexus
+        group: nexus
+        recurse: yes
+    
+    - name: Change sonar type file ownership, group and permissions
+      ansible.builtin.file:
+        path: /opt/sonatype-work
         state: directory
         owner: nexus
         group: nexus
