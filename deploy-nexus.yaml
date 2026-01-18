@@ -70,7 +70,7 @@
         name: nexus
         state: present
 
-    - name: Add the user 'nexus' with a specific uid and a primary group of 'admin'
+    - name: Add the user 'nexus' and group 'nexus'
       ansible.builtin.user:
         name: nexus
         comment: nexus user
