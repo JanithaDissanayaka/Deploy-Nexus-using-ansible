@@ -1,6 +1,6 @@
 ---
 - name: install java and net tools
-  hosts: 3.108.40.13
+  hosts: 65.2.143.99
   tasks:
     - name: Update repositories cache
       ansible.builtin.apt:
@@ -17,7 +17,7 @@
         name: net-tools
 
 - name: Download and unpack nexus installer
-  hosts: 3.108.40.13
+  hosts: 65.2.143.99
   tasks:
     - name: Download nexus
       ansible.builtin.get_url: 
@@ -49,3 +49,24 @@
       when: not stat_result.stat.exists
 
 
+- name: create nexus user for nexus folders
+  hosts: 65.2.143.99
+  tasks:
+    - name: Ensure group "nexus" exists
+      ansible.builtin.group:
+        name: nexus
+        state: present
+
+    - name: Add the user 'nexus' with a specific uid and a primary group of 'admin'
+      ansible.builtin.user:
+        name: nexus
+        comment: nexus user
+        group: nexus
+
+    - name: Change file ownership, group and permissions
+      ansible.builtin.file:
+        path: /opt/nexus
+        state: directory
+        owner: nexus
+        group: nexus
+        recurse: yes
